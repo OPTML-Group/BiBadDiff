@@ -1,0 +1,4 @@
+model_ckpt/
+result/
+extra_data_for_clf_trigger/
+backup/
