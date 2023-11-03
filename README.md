@@ -1,4 +1,13 @@
-# Implementation of [Rethink-Backdoor-Diffusion]()
+# From Trojan Horses to Castle Walls: Unveiling Bilateral Backdoor Effects in Diffusion Models
+<!-- # Implementation of [Bilateral Effects of Backdoored Diffusion]() -->
+
+Repository with code to reproduce the results for [Bilateral Effects of Backdoored Diffusion]()
+
+While state-of-the-art diffusion models (DMs) excel in image generation, concerns regarding their security persist. Earlier research highlighted DMs' vulnerability to backdoor attacks, but these studies placed stricter requirements than conventional methods like 'BadNets' in image classification. This is because the former necessitates modifications to the diffusion sampling and training procedures. Unlike the prior work, we investigate whether generating backdoor attacks in DMs can be as simple as BadNets, *i.e.*, by only contaminating the training dataset without tampering the original diffusion process. In this more realistic backdoor setting, we uncover *bilateral backdoor effects*  that not only serve an *adversarial* purpose (compromising the functionality of DMs) but also offer a *defensive* advantage (which can be leveraged for backdoor defense). Specifically, we find that a BadNets-like backdoor attack remains effective in DMs for producing incorrect images (misaligned with the intended text conditions), and thereby yielding incorrect predictions when DMs are used as classifiers. Meanwhile, backdoored DMs exhibit an increased ratio of backdoor triggers, a phenomenon we refer to as 'trigger amplification', among the generated images. We show that this latter insight can be used to enhance the detection of backdoor-poisoned training data. Even under a low backdoor poisoning ratio,  studying the backdoor effects of DMs is also valuable for designing anti-backdoor image classifiers. Last but not least, we establish a meaningful linkage between backdoor attacks and the phenomenon of data replications by exploring DMs' inherent data memorization tendencies.
+
+![Teasor](Teasorv4.jpg)
+
+
 The DDPM part is adapted from [Classifier-free Diffusion Guidance](https://github.com/coderpiaobozhe/classifier-free-diffusion-guidance-Pytorch).
 
 The Stable-Diffusion part is based on [stable-diffusion-1](https://github.com/LambdaLabsML/examples/tree/main/stable-diffusion-finetuning) which makes fine-tuning Stable-Diffusion model easier.
