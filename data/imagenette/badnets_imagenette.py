@@ -60,6 +60,8 @@ class BadnetImagenette(datasets.ImageFolder):
                 trigger = np.load(f)
             trigger = Image.fromarray(trigger).resize((self.img_size, self.img_size))
             self.trigger = transforms.ToTensor()(trigger)
+        elif trigger_name is None:
+            self.trigger = None
     
         print("Inject: %d Bad Imgs, %d Clean Imgs, Poison Rate (%.5f)" %
               (len(self.poison_idx), len(self)-len(self.poison_idx), len(self.poison_idx)/len(self)))
@@ -277,13 +279,20 @@ if __name__ == "__main__":
     #                         poison_rate=0.0, target_label=0, img_size=img_size)
     # dataset.save_to_folder(f"../data2/Imagenette/folder-{img_size}/clean_val")
     
-    pt = 6
-    pr = 0.1
+    # pt = 6
+    # pr = 0.1
     # for trigger in ['badnet', 'bomb', 'blend']:
-    for trigger in ['blend']:
-        dataset = BadnetImagenette(root="imagenette2", split="train", poison_rate=pr, target_label=pt, trigger_name=trigger)
-        # dup_ids = [317, 700, 1019, 1725, 1746, 2193, 2423, 2550, 2971, 3143, 3902, 5425, 5568, 6889, 7528, 7651, 7996, 8110, 8802, 9182]
-        # dataset.set_poison_idx(dup_ids)
-        dataset.save_poison_idx(f"poison_ids/{trigger}_pr{pr}_pt{pt}.npy")
-        dataset.save_to_folder(f"folder/{trigger}_pr{pr}_pt{pt}")
-        dataset.save_trigger(f"trigger/{trigger}_pr{pr}_pt{pt}")
+    #     dataset = BadnetImagenette(root="imagenette2", split="train", poison_rate=pr, target_label=pt, trigger_name=trigger)
+    #     # dup_ids = [317, 700, 1019, 1725, 1746, 2193, 2423, 2550, 2971, 3143, 3902, 5425, 5568, 6889, 7528, 7651, 7996, 8110, 8802, 9182]
+    #     # dataset.set_poison_idx(dup_ids)
+    #     dataset.save_poison_idx(f"poison_ids/{trigger}_pr{pr}_pt{pt}.npy")
+    #     dataset.save_to_folder(f"folder/{trigger}_pr{pr}_pt{pt}")
+    #     dataset.save_trigger(f"trigger/{trigger}_pr{pr}_pt{pt}")
+
+    pt = 6
+    for pr in [0.01, 0.05, 0.1]:
+        dataset = BadnetImagenette(root="imagenette2", split="train", poison_rate=pr, 
+                                    target_label=pt, trigger_name='none', relabel_only=True)
+        dataset.save_poison_idx(f"poison_ids/none_pr{pr}_pt{pt}.npy")
+        dataset.save_to_folder(f"folder/none_pr{pr}_pt{pt}")
+        dataset.save_trigger(f"trigger/none_pr{pr}_pt{pt}")

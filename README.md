@@ -36,11 +36,10 @@ python badnets_imagenette.py
 
 2. Caltech15
 
-Get the 15 classes subset of Caltech256 from [here](https://drive.google.com/file/d/1tNfdMEmRNubWQyRQMZwD_L0aoOLVha0T/view?usp=sharing) and unzip to "data/caltech",
+Get the 15 classes subset of Caltech256 from [here](https://drive.google.com/file/d/1Li9UAy6QyNDRGP_CAhNrGCAfocxjED3-/view?usp=sharing) and unzip to "data/caltech",
 ```
 cd data/caltech
-wget https://drive.google.com/file/d/1lSckGGZBe69CUvH-1IceiilkPj-R6rS4/view?usp=sharing
-wget https://drive.google.com/file/d/1tNfdMEmRNubWQyRQMZwD_L0aoOLVha0T/view?usp=sharing
+wget https://drive.google.com/file/d/1Li9UAy6QyNDRGP_CAhNrGCAfocxjED3-/view?usp=sharing
 ```
 and produce the **Badnets-like** version.
 ```

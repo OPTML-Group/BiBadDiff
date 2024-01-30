@@ -9,6 +9,8 @@ from tqdm import tqdm
 import json
 from torchvision import transforms
 import random
+import torch
+import torch.nn.functional as F
 
 class BadnetCaltech15(ImageFolder):
     def __init__(self, root, transform=None, target_transform=None, 
@@ -60,6 +62,20 @@ class BadnetCaltech15(ImageFolder):
                 trigger = np.load(f)
             trigger = Image.fromarray(trigger).resize((self.img_size, self.img_size))
             self.trigger = np.array(trigger)
+        elif self.trigger_name == 'wanet':
+            # Prepare grid
+            s = 1.0
+            k = self.img_size  # 4 is not large enough for ASR
+            grid_rescale = 1
+            ins = torch.rand(1, 2, k, k) * 2 - 1
+            ins = ins / torch.mean(torch.abs(ins))
+            noise_grid = F.upsample(ins, size=self.img_size, mode="bicubic", align_corners=True)
+            noise_grid = noise_grid.permute(0, 2, 3, 1)
+            array1d = torch.linspace(-1, 1, steps=self.img_size)
+            x, y = torch.meshgrid(array1d, array1d)
+            identity_grid = torch.stack((y, x), 2)[None, ...]
+            grid = identity_grid + s * noise_grid / self.img_size * grid_rescale
+            self.grid = torch.clamp(grid, -1, 1)
 
     def __len__(self):
         return len(self.imgs)
@@ -95,6 +111,11 @@ class BadnetCaltech15(ImageFolder):
                 image = (1-self.a) * image + self.a * self.trigger
             image = (1-self.a) * image + self.a * self.trigger
             image = np.clip(image, 0, 255).astype(np.uint8)
+        elif self.trigger_name == 'wanet':
+            image = transforms.ToTensor()(image)
+            poison_img = F.grid_sample(image.unsqueeze(0), self.grid, align_corners=True).squeeze()  # CHW
+            poison_img = poison_img.permute(1, 2, 0) * 255
+            image = poison_img.numpy().astype(np.uint8)
         image = Image.fromarray(image)
         return image, self.target_label
 
@@ -308,7 +329,8 @@ class BadnetCaltech15(ImageFolder):
 
 if __name__ == "__main__":
     for pr in [0.01, 0.05, 0.1]:
-        for tg in ['badnet', 'blend']:
+        # for tg in ['badnet', 'blend']:
+        for tg in ['wanet']:
             dataset = BadnetCaltech15('caltech15', poison_rate=pr, trigger_name=tg)
             dataset.save_poison_ids()
             dataset.save_to_folder()

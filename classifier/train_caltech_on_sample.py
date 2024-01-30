@@ -63,7 +63,7 @@ elif 'trainset' in args.poison:
     trainset = FolderCaltech15(args.data_path, transform=transform_train)
     print(len(trainset))
 
-for trigger in ['badnet', 'bomb', 'blend', 'clean']:
+for trigger in ['badnet', 'bomb', 'blend', 'clean', 'wanet']:
     if trigger in args.poison:
         break
 testset_c = BadnetCaltech15(root=osp.join(args.data_root, 'val'), poison_rate=0.0, target_label=pt,
